@@ -1,1 +1,24 @@
 
+workflows:
+  paki-android:
+    name: PAKI Android APK
+    max_build_duration: 60
+    instance_type: linux_x2
+
+    scripts:
+      - name: Check Android project
+        script: |
+          set -e
+          unzip -o PAKI-Android-Project.zip -d paki_src
+          GRADLEW=$(find paki_src -name gradlew -type f | head -1)
+          if [ -z "$GRADLEW" ]; then
+            echo "Gradle wrapper not found in ZIP"
+            exit 1
+          fi
+          cd "$(dirname "$GRADLEW")"
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+    artifacts:
+      - "**/build/outputs/apk/**/*.apk"
+      
