@@ -6,19 +6,14 @@ workflows:
     instance_type: linux_x2
 
     scripts:
-      - name: Check Android project
+      - name: Extract Android project
         script: |
           set -e
           unzip -o PAKI-Android-Project.zip -d paki_src
-          GRADLEW=$(find paki_src -name gradlew -type f | head -1)
-          if [ -z "$GRADLEW" ]; then
-            echo "Gradle wrapper not found in ZIP"
-            exit 1
-          fi
-          cd "$(dirname "$GRADLEW")"
-          chmod +x gradlew
-          ./gradlew assembleDebug
+          cd paki_src
+          gradle --version
+          gradle assembleDebug
 
     artifacts:
-      - "**/build/outputs/apk/**/*.apk"
+      - "paki_src/app/build/outputs/apk/**/*.apk"
       
